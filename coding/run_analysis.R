@@ -2,7 +2,7 @@
 # Getting and Cleaning Data Peer Assessment
 # By Casey Tsui
 # Format: R
-# Last updated: 4/18/14
+# Last updated: 4/26/14
 
 # NOTE: This code reads in, cleans, and analyzes data from accelerometers from
 # the Samsung Galaxy S smartphone. It is created for the Coursera "Getting and Cleaning Data" course.
@@ -12,6 +12,9 @@ library(plyr)
 
 
 # FUNCTIONS ###################################################################
+# This function will read in and clean either the training or test data sets by
+# reading in the x_train and y_train data, assigning the features as column
+# names, then merging in activity labels for y_train
 ReadFiles <- function(group) {
         # group is a character vector of length 1, either "train" or "test"
 
@@ -54,48 +57,57 @@ ReadFiles <- function(group) {
 
 
 # SET WORKING DIRECTORY #######################################################
-wd1 <- "/Users/caseytsui/Documents/personal/coursera/"
-wd2 <- "03_getting_and_cleaning_data/peer_assessment/"
-dir <- paste(wd1, wd2, sep="")
+root1 <- "/Users/caseytsui/Documents/personal/coursera/"
+root2 <- "03_getting_and_cleaning_data/peer_assessment/"
+dir <- paste(root1, root2, sep="")
 setwd(dir)
 
 
 # CREATE DATA FOLDER IF NONE EXISTS ###########################################
-if (!file.exists("data")) {
-        dir.create("data")
+if (!file.exists("./data/")) {
+        dir.create("./data/")
 }
 
 
-# MERGES THE TRAINING AND THE TEST SETS TO CREATE ONE DATA SET
+# DOWNLOAD DATA TO FOLDER #####################################################
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", destfile="./data/wearabledata.zip", method="curl")
+closeAllConnections()
+
+# I unzipped the file manually into the working directory
+
+
+# MERGES THE TRAINING AND THE TEST SETS TO CREATE ONE DATA SET #################
 train <- ReadFiles("train")
 test <- ReadFiles("test")
-merged_file <- rbind(train, test)
+merged <- rbind(train, test)
 
 
-# EXTRACT ONLY MEASUREMENTS ON THE MEAN AND STD DEVIATION FOR EACH MEASUREMENT
+# EXTRACT ONLY MEASUREMENTS ON THE MEAN AND STD DEVIATION FOR EACH MEASUREMENT #
 # Use grep to subset columns with means and standard deviations
+# I included both "mean" and "Mean" as variable name matches
 means <- grep("^[a-zA-Z0-9.]*[Mm]ean[^Freq][a-zA-Z0-9.]*$",
-        names(merged_file))
-stds <- grep("std", names(merged_file))
+        names(merged))
+stds <- grep("std", names(merged))
 
 # Put the column indices with mean and std variables into the same vector and
 # sort it in ascending order
 indices <- sort(c(means, stds))
 
 # Create new data frame with mean and std variables
-means_stds <- merged_file[, c(1:3, indices)]
+means_stds <- merged[, c(1:3, indices)]
 
 
-# USES DESCRIPTIVE ACTIVITY NAMES TO NAME THE ACTIVITIES IN THE DATA SET
+# USES DESCRIPTIVE ACTIVITY NAMES TO NAME THE ACTIVITIES IN THE DATA SET #######
 # This is done within the ReadFiles function
 
 
-# APPROPRIATELY LABELS THE DATA SET WITH DESCRIPTIVE ACTIVITY NAMES. 
+# APPROPRIATELY LABELS THE DATA SET WITH DESCRIPTIVE ACTIVITY NAMES ############
 # This is done within the ReadFiles function
 
 
-# CREATES A SECOND, INDEPENDENT TIDY DATA SET WITH THE AVERAGE OF EACH VARIABLE FOR EACH ACTIVITY AND EACH SUBJECT
-means_only <- merged_file[, c(1:3, means)]
+# CREATES A SECOND, INDEPENDENT TIDY DATA SET WITH THE AVERAGE OF EACH VARIABLE
+# FOR EACH ACTIVITY AND EACH SUBJECT
+means_only <- merged[, c(1:3, means)]
 
 x <- ddply(means_only,
       .(subject_id, activity_name),
