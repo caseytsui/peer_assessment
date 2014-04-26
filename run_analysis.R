@@ -111,14 +111,13 @@ means_stds <- merged[, c(1:3, indices)]
 
 # CREATES A SECOND, INDEPENDENT TIDY DATA SET WITH THE AVERAGE OF EACH VARIABLE
 # FOR EACH ACTIVITY AND EACH SUBJECT
-means_only <- merged[, c(1:3, means)]
-
-tidy <- ddply(means_only,
+tidy <- ddply(means_stds,
               .(subject_id, activity_name),
               numcolwise(mean))
 
 
 # WRITE THE TIDY DATA SET TO WORKING DIRECTORY
-write.table(tidy, "tidy.txt", sep=",")
+write.table(tidy, "tidy.txt", sep=",", row.names=FALSE)
+
 
 
