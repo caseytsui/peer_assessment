@@ -89,6 +89,7 @@ The activity ID numbers and their corresponding labels are as follows:
 The data was processed in steps:
 
 The "ReadFiles" function conducts steps 1-8 for each of the "train" and "test" data sets:
+
 1. Read in subject data
 2. Read in list of feature names
 3. Read in x_train and use the feature names as its column names
@@ -97,7 +98,8 @@ The "ReadFiles" function conducts steps 1-8 for each of the "train" and "test" d
 6. Merge y_train and activity labels by the "activity_id" variable
 7. Append the x_train object onto the y_train and activity labels
 
-Steps 8-11 run in the global environment
+Steps 8-11 run in the global environment:
+
 8. Append the "train" and "test" data sets
 9. Use regular expressions to select only those variables in the merged data set that contain the phrase "mean" in their name
 10. Subset the merged data set to select for those variables that contain the phrase "std" in their name
@@ -109,6 +111,7 @@ For specific details, please see the commented run_analysis.R script file.
 # TRANSFORMATIONS ##############################################################
 
 The instructions for this assignment were to write an R script that would do the following:
+
 1. Merges the training and the test sets to create one data set.
 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
 3. Uses descriptive activity names to name the activities in the data set
