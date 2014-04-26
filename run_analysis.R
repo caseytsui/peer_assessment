@@ -1,11 +1,12 @@
 # run_analysis.R
 # Getting and Cleaning Data Peer Assessment
 # By Casey Tsui
-# Format: R
+# Format: R version 3.0.3 (2014-03-06)
 # Last updated: 4/26/14
 
 # NOTE: This code reads in, cleans, and analyzes data from accelerometers from
-# the Samsung Galaxy S smartphone. It is created for the Coursera "Getting and Cleaning Data" course.
+# the Samsung Galaxy S smartphone. It is created for the Coursera "Getting and
+# Cleaning Data" course.
 
 
 library(plyr)
@@ -70,10 +71,13 @@ if (!file.exists("./data/")) {
 
 
 # DOWNLOAD DATA TO FOLDER #####################################################
-download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", destfile="./data/wearabledata.zip", method="curl")
+urlroot <- "https://d396qusza40orc.cloudfront.net/"
+filename <- "getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+fileurl <- paste(urlroot, filename, sep="")
+download.file(fileurl, destfile="./data/wearabledata.zip", method="curl")
 closeAllConnections()
 
-# I unzipped the file manually into the working directory
+# I unzipped the files manually into the working directory
 
 
 # MERGES THE TRAINING AND THE TEST SETS TO CREATE ONE DATA SET #################
@@ -112,5 +116,9 @@ means_only <- merged[, c(1:3, means)]
 tidy <- ddply(means_only,
               .(subject_id, activity_name),
               numcolwise(mean))
+
+
+# WRITE THE TIDY DATA SET TO WORKING DIRECTORY
+write.table(tidy, "tidy.txt", sep=",")
 
 
