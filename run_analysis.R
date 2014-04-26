@@ -109,35 +109,8 @@ means_stds <- merged[, c(1:3, indices)]
 # FOR EACH ACTIVITY AND EACH SUBJECT
 means_only <- merged[, c(1:3, means)]
 
-x <- ddply(means_only,
-      .(subject_id, activity_name),
-      numcolwise(mean))
+tidy <- ddply(means_only,
+              .(subject_id, activity_name),
+              numcolwise(mean))
 
-x <- cbind(x[, 1:2], rowMeans(x[, 4:length(x)]))
-names(x)[3] <- "mean"
-
-
-
-###### DRAFTY ##########
-
-
-ddply(means_only,
-      .(subject_id, activity_name),
-      summarize,
-     c(mean = mean(means_only$fBodyAccMag.sma.., na.rm=TRUE)))
-     # function(df)
-         c(mean = mean(df$fBodyAccMag.sma.., na.rm=TRUE)))
-
-means_only[, list(height = colMeans(height)
-+            , weight = mean(weight)
-+            , age = mean(age)
-+            ), by = sample]
-
-lst <- list()
-for (i in 1:30) {
-        for (j in 1:6) {
-                lst[i][j] <- rowMeans(means_only[which(means_only$subject_id == i & means_only$activity_id == j), ])
-        }
-
-}
 
